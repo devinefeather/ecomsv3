@@ -1,0 +1,73 @@
+{%extends 'base.html'%}
+{%block start%}
+
+<!-- <h2>Welcome to Our E-Commerce Store</h2>
+
+<div class="categories">
+  {% for category_data in categories_with_variants %}
+  
+    <h3>{{ category_data.category.name }}</h3>
+    <div class="products">
+      {% for variant in category_data.variants %}
+        <div class="product">
+        <div class="img-wrap"> <img src="/media/{{variant.variantimages.first}}" class="pt-3"> </div>
+          <h4>{{ variant.product.name }}</h4>
+          <p>{{ variant.product.description }}</p>
+          <p>Variant: Size {{ variant.size }}, Color {{ variant.color }} - Price: ${{ variant.price.sale_price }}</p>
+        </div>
+      {% endfor %}
+    </div>
+  {% endfor %}
+</div> -->
+
+{%include 'app/full_page_banner.html'%}
+
+
+<div class="container-fluid pt-5 bg-light">
+
+    {% for category_data in categories_with_variants %}
+
+    <div class="alert bg-white">
+        <div class="d-flex justify-content-between">
+            
+            <h3>{{ category_data.category.name }}</h3>
+        
+        <h5><a href="">more</a></h5>
+        
+    </div>
+    
+
+    <div class="container">
+    <div class="row">    
+
+        {% for product in category_data.variants %}
+            <div class="col-md-3">
+                <a href="{%url 'app:product-details' product.slug%}">
+                    <figure class="card card-product-grid">
+                        <div class="img-wrap"> <img src="/media/{{product.variantimages.first}}" class="pt-3"> </div>
+                        <figcaption class="info-wrap text-center">
+                            <a href="#" class="title">{{product.vairantName}}</a>
+                            <var class="price h6">
+                                {{product.price.sale_price}}
+                            </var>
+                            <p class="text-muted" style="text-decoration: line-through;">
+                                {{product.price}}</p>
+
+                        </figcaption>
+                    </figure> 
+                </a>
+            </div>
+            {%endfor%}
+
+        </div>
+
+
+    </div>
+    </div>
+    {%endfor%}
+</div>
+
+
+
+
+{%endblock%}

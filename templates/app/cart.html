@@ -1,0 +1,177 @@
+{%extends 'base.html'%}
+{%load static%}
+{%block start%}
+<section class="section-content padding-y">
+    <div class="container">
+    
+    <div class="row">
+        <main class="col-md-9">
+            
+    <div class="card">
+    
+    <table class="table table-borderless table-shopping-cart">
+    <thead class="text-muted">
+    <tr class="small text-uppercase">
+      <th scope="col">Product</th>
+      <th scope="col" width="120">Quantity</th>
+      <th scope="col" width="120">Price</th>
+      <th scope="col" class="text-right" width="200"> </th>
+    </tr>
+    </thead>
+    <tbody>
+        {%for item in cart_items %}                        
+        
+        
+    <tr>
+        <td>
+            <figure class="itemside">
+                <div class="aside"><img src="/media/{{item.variant.variantimages.first.image}}" class="img-sm"></div>
+                <figcaption class="info">
+                    <a href="{%url 'app:product-details' item.variant.slug%}" class="title text-dark">{{item.variant.product.name}} &amp; {{item.variant.vairantName}}</a>
+                    <p class="text-muted small">Size: {{item.variant.size}}, Color: {{item.variant.color    }}, <br> Brand: {{item.variant.product.Brand}}</p>
+                </figcaption>
+            </figure>
+        </td>
+        <td class="text-center"> 
+            {{item.total_quantity}}            
+        </td>
+        <td> 
+            <div class="price-wrap"> 
+                <var class="price"> &#x20B9;{{item.total_sale_price}}</var> 
+                <small class="text-muted">  &#x20B9;{{item.variant.price}} each </small> 
+            </div> <!-- price-wrap .// -->
+        </td>
+        <td class="text-right " style="display:flex;justify-content: space-evenly;"> 
+            <form method="post" action="{% url 'app:cart' %}">
+                {% csrf_token %}
+                <input type="hidden" name="variant_id" value="{{ item.variant.uid }}">
+                <input type="hidden" name="action" value="decrease">
+                <button type="submit" id = 'button-minus' class="btn btn-outline-primary" \>-</button>
+              </form>
+            <form method="post" action="{% url 'app:cart' %}">
+                {% csrf_token %}
+                <input type="hidden" name="variant_id" value="{{ item.variant.uid }}">
+                <input type="hidden" name="action" value="add">
+                <button type="submit" id = 'button-plus' class="btn btn-outline-primary">+</button>
+              </form>
+              <form method="post" action="{% url 'app:cart' %}">
+                {% csrf_token %}
+                <input type="hidden" name="variant_id" value="{{item.variant.uid}}">
+                <input type="hidden" name="action" value="remove">
+                <button type="submit" id = 'button-remove' class="btn btn-outline-primary">remove</button>
+              </form>    
+        </td>
+    </tr>
+   {%endfor%}
+    </tbody>
+    </table>
+    
+    <div class="card-body border-top">
+
+        <form id="payment-form" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="cart_id" value="i_am_lucky">
+            <input type="hidden" name="amount" value="{{total_price}}">  
+            <div id="card-element">
+              <!-- A Stripe Element will be inserted here. -->
+            </div>
+            {%if request.user.is_authenticated%}
+            <button id="rzp-button1" type="submit" id="submit-button" class="btn btn-primary float-md-right">
+                Pay Now
+                <i class="fa fa-chevron-right"></i> 
+            </button>
+            {%else%}
+            <a href="{%url 'account:login'%}" class="btn btn-primary float-md-right">pay now</a>
+            {%endif%}
+          </form>
+
+
+        
+        <a href="{% url 'app:index' %}" class="btn btn-light"> <i class="fa fa-chevron-left"></i> Continue shopping </a>
+    </div>	
+    </div> <!-- card.// -->
+    
+    <div class="alert alert-success mt-3">
+        <p class="icontext"><i class="icon text-success fa fa-truck"></i> Free Delivery within 1-2 weeks</p>
+    </div>
+    
+        </main> <!-- col.// -->
+        <aside class="col-md-3">
+            <div class="card mb-3">
+             
+            </div>  <!-- card .// -->
+            <div class="card">
+                <div class="card-body">
+                        <dl class="dlist-align">
+                          <dt>Total price:</dt>
+                          <dd class="text-right">&#x20B9;{{total_price}}</dd>
+                        </dl>
+                        <dl class="dlist-align">
+                          <dt>Discount:</dt>
+                          <dd class="text-right">&#x20B9;{{discount}}</dd>
+                        </dl>
+                        <dl class="dlist-align">
+                          <dt>Total:</dt>
+                          <dd class="text-right  h5">&#x20B9;<strong>{{total_actual}}</strong></dd>
+                        </dl>
+                        <hr>
+                        <p class="text-center mb-3">
+                            <img src="{% static 'images/misc/payments.png'%}" height="26">
+                        </p>
+                        
+                </div> <!-- card-body.// -->
+            </div>  <!-- card .// -->
+        </aside> <!-- col.// -->
+    </div>
+    
+    </div> <!-- container .//  -->
+    </section>
+
+
+   
+      
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script>        
+    var options = {
+        "key": "rzp_test_LgkE5nwGZoQl5c", // Enter the Key ID generated from the Dashboard
+        "amount": "{{payment.amount}}", // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+        "currency": "INR",
+        "name": "Acme Corp",
+        "description": "Test Transaction",
+        "image": "https://example.com/your_logo",
+        "order_id": "{{payment.id}}", //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+        "handler": function (response){
+            fetch("/sucess",{
+                method:"POST",
+                body:JSON.stringify({
+                    title:"fix my bugs"
+                }),
+                headers:{
+                    "content-type":"application/json; charset=UTF-8"
+                }
+            })
+            window.location.href = 'app:index';
+            // alert(response.razorpay_payment_id);
+            // alert(response.razorpay_order_id);
+            // alert(response.razorpay_signature)            
+        },
+    };
+    var rzp1 = new Razorpay(options);
+    rzp1.on('payment.failed', function (response){
+            alert(response.error.code);
+            alert(response.error.description);
+            alert(response.error.source);
+            alert(response.error.step);
+            alert(response.error.reason);
+            alert(response.error.metadata.order_id);
+            alert(response.error.metadata.payment_id);
+    });
+    document.getElementById('rzp-button1').onclick = function(e){
+        rzp1.open();
+        e.preventDefault();
+    }
+    </script>
+    
+ 
+
+{%endblock%}

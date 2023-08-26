@@ -1,0 +1,148 @@
+{%extends 'base.html'%}
+{%block start%}
+
+<section class="section-content padding-y bg">
+  <div class="container">
+
+    <!-- ============================ COMPONENT 1 ================================= -->
+    <div class="card">
+      <div class="row no-gutters">
+        <aside class="col-md-6">
+          <article class="gallery-wrap">
+            <div class="img-big-wrap">
+
+              <div> <a href="#"><img src="/media/{{variant.variantimages.first}}"></a></div>              
+
+            </div> <!-- slider-product.// -->
+            <div class="thumbs-wrap">
+              {%for image in variant.variantimages.all%}
+              <a href="#" class="item-thumb"> <img src="/media/{{image}}"></a>
+
+              {%endfor%}
+            </div> <!-- slider-nav.// -->
+          </article> <!-- gallery-wrap .end// -->
+        </aside>
+        <main class="col-md-6 border-left">
+          <article class="content-body">
+
+            <h2 class="title">{{variant.product.name}}</h2>
+
+            <div class="rating-wrap my-3">
+              <ul class="rating-stars">
+                <li style="width:80%" class="stars-active">
+                  <i class="fa fa-star"></i> <i class="fa fa-star"></i>
+                  <i class="fa fa-star"></i> <i class="fa fa-star"></i>
+                  <i class="fa fa-star"></i>
+                </li>
+                <li>
+                  <i class="fa fa-star"></i> <i class="fa fa-star"></i>
+                  <i class="fa fa-star"></i> <i class="fa fa-star"></i>
+                  <i class="fa fa-star"></i>
+                </li>
+              </ul>
+              <small class="label-rating text-muted">132 reviews</small>
+              <small class="label-rating text-success"> <i class="fa fa-clipboard-check"></i> 154 orders </small>
+            </div> <!-- rating-wrap.// -->
+
+            <div class="mb-3">                            
+              
+              <var class="price h4">{{variant.price.sale_price}}</var>                                                    
+              <var class="price text-muted" style="text-decoration: line-through;">{{variants.price}}</var>   
+              
+            </div> <!-- price-detail-wrap .// -->
+
+            <p>
+
+                {{variant.product.description}}
+            </p>
+
+
+            <dl class="row">
+              <dt class="col-sm-3">Model#</dt>
+              <dd class="col-sm-9">{{variant.slug}}</dd>
+            
+              <dt class="col-sm-3">Color</dt>
+              
+              <dd class="col-sm-9">
+                
+                    {{variant.color}}&nbsp;                  
+                
+              </dd>
+              <dt class="col-sm-3">Delivery</dt>
+              <dd class="col-sm-9">India </dd>
+            </dl>
+
+              <hr>
+              <div class="form-row">
+                <div class="form-group col-md flex-grow-0">
+                  <label>Quantity</label>
+                  <div class="input-group mb-3 input-spinner">
+                    <div class="input-group-prepend">
+                      <button class="btn btn-light" type="button" id="add-button"> + </button>
+                    </div>
+                    <input type="text" class="form-control" value="1" id="quantity-value">
+                    <div class="input-group-append">
+                      <button class="btn btn-light" type="button" id="minus-button"> − </button>
+                    </div>
+                  </div>
+                </div> <!-- col.// -->
+
+
+                <div class="form-group col-md">
+                  <label>Select size</label>
+                  <div class="mt-1">                                                                                          
+                      <form method="post" action="{%url 'app:add_to_cart' %}">
+                        {% csrf_token %}
+                        <select name="color">
+                          <option value="" disabled selected>Select color</option>
+                          
+                          {% for color in related_colors%}                      
+                              <option value="{{ color.uid}}">{{ color.color_name }}</option>
+                          {% endfor %}
+                      </select>                    
+                      <select name="sizes">
+                          <option value="" disabled selected>Select Size</option>
+                          
+                          {% for size in related_sizes  %}                        
+                              <option value="{{ size.uid }}">{{ size.name }}</option>
+                          {% endfor %}
+                          </select>                 
+                          
+                          <input type="text" name="product_id"value="{{variant.product.uid}}" id="" hidden>
+                          <input type="text" name="variant_id"value="{{variant.uid}}" id="" hidden>
+                            
+                          </select>                  
+                  </div>
+
+
+                </div> <!-- col.//
+        
+              -->
+              </div> <!-- row.// -->
+
+              
+              <button type="submit" class="btn  btn-outline-primary"> <span class="text">Add to cart</span> <i
+                class="fas fa-shopping-cart"></i>
+              </button>
+              <a href="#" > </a>
+                </form>
+            </article> <!-- product-info-aside .// -->
+          </main> <!-- col.// -->
+          <div class="row">
+            <div class="col">
+              
+              {%include 'alert.html'%}
+            </div>
+          </div>
+        </div> <!-- row.// -->
+      </div> <!-- card.// -->
+      <!-- ============================ COMPONENT 1 END .// ================================= -->
+
+
+    </div>
+  </section>
+
+
+
+  
+{%endblock%}

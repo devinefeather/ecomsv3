@@ -1,0 +1,24 @@
+{%extends 'base.html'%}
+{%block start%}
+
+
+  <h2>Variant Details</h2>
+  <h3>{{ variant.product.name }}</h3>
+  <p>Size: {{ variant.size }}</p>
+  <p>Color: {{ variant.color }}</p>
+  <p>Price: ${{ variant.variant_price }}</p>
+  
+  <h4>Related Sizes:</h4>
+  <ul>
+    {% for size in related_sizes %}
+      <li>{{ size }}</li>
+    {% endfor %}
+  </ul>
+  
+  <h4>Related Colors:</h4>
+  <ul>
+    {% for color in related_colors %}
+      <li>{{ color }}</li>
+    {% endfor %}
+  </ul>
+{%endblock%}
